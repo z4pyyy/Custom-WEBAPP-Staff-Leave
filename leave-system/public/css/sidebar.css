@@ -1,0 +1,43 @@
+/* Sidebar layout fix */
+.main-sidebar {
+    padding-top: 20px;
+    padding-left: 10px;
+    background-color: #1e293b; /* Slate-800 tone */
+    color: #fff;
+}
+
+/* Sidebar inner section */
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Left-align */
+}
+
+/* Sidebar navigation links */
+.nav-sidebar .nav-link {
+    text-align: left;
+    width: 100%;
+    padding: 10px 20px;
+    font-size: 15px;
+    color: #cbd5e1; /* Tailwind slate-300 */
+}
+
+.nav-sidebar .nav-link:hover {
+    background-color: #334155; /* Hover background */
+    color: #ffffff;
+}
+
+.nav-sidebar .nav-link.active {
+    background-color: #0ea5e9; /* Sky-500 */
+    color: white;
+    font-weight: bold;
+}
+
+/* Optional: Section headers like USER MANAGEMENT */
+.nav-header {
+    font-size: 13px;
+    font-weight: bold;
+    color: #94a3b8; /* Slate-400 */
+    padding: 10px 20px 5px;
+    text-transform: uppercase;
+}
