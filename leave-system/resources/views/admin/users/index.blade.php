@@ -34,20 +34,24 @@
                             </span>
                         </td>
                         <td>
-                            <a href="{{ route('admin.users.edit', $id) }}"
-                               class="btn btn-sm btn-warning" title="Edit User">
-                                <i class="fas fa-edit"></i>
-                            </a>
+                            @if (($user->role ?? '') !== 'superadmin')
+                                <a href="{{ route('admin.users.edit', $id) }}"
+                                class="btn btn-sm btn-warning" title="Edit User">
+                                    <i class="fas fa-edit"></i>
+                                </a>
 
-                            <form action="{{ route('admin.users.delete', $id) }}"
-                                  method="POST" class="d-inline-block"
-                                  onsubmit="return confirm('Delete this user?')">
-                                @csrf
-                                @method('DELETE')
-                                <button class="btn btn-sm btn-danger" title="Delete User">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-                            </form>
+                                <form action="{{ route('admin.users.delete', $id) }}"
+                                    method="POST" class="d-inline-block"
+                                    onsubmit="return confirm('Delete this user?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-sm btn-danger" title="Delete User">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </form>
+                            @else
+                                <span class="text-muted">Protected</span>
+                            @endif
                         </td>
                     </tr>
                 @empty

@@ -28,7 +28,6 @@ class UserController extends Controller
     }
 
 
-    // Show edit form for a user
     public function edit($id)
     {
         $user = $this->firebase->getUser($id);
@@ -37,13 +36,29 @@ class UserController extends Controller
             abort(404);
         }
 
-        $user['id'] = $id;
+        if (($user['role'] ?? '') === 'superadmin') {
+            return redirect()->back()->with('error', 'You cannot edit the Superadmin.');
+        }
 
+        $user['id'] = $id;
         return view('admin.users.edit', [
             'user' => (object) $user,
-            'id'   => $id
+            'id' => $id
         ]);
     }
+
+    public function destroy($id)
+    {
+        $user = $this->firebase->getUser($id);
+
+        if (($user['role'] ?? '') === 'superadmin') {
+            return redirect()->back()->with('error', 'You cannot delete the Superadmin.');
+        }
+
+        $this->firebase->deleteUser($id);
+        return redirect()->route('admin.users')->with('success', 'User deleted!');
+    }
+
 
 
     // Update a user
@@ -62,13 +77,5 @@ class UserController extends Controller
         ]);
 
         return redirect()->route('admin.users')->with('success', 'User updated successfully!');
-    }
-
-    // Delete a user
-    public function destroy($id)
-    {
-        $this->firebase->deleteUser($id);
-
-        return redirect()->route('admin.users')->with('success', 'User deleted!');
     }
 }

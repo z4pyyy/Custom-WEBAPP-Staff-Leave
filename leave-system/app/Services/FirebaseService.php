@@ -55,7 +55,10 @@ class FirebaseService
         $this->database->getReference($path)->set($data);
     }
 
-
+    public function getData(string $path)
+    {
+        return $this->database->getReference($path)->getValue();
+    }
 
 
     public function drop(string $path)

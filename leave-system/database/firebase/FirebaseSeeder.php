@@ -19,6 +19,9 @@ class FirebaseSeeder
         // Seed roles
         (new FirebaseRoleSeeder($this->firebase))->run();
 
+        // Seed page permissions
+        (new FirebasePagePermissionSeeder($this->firebase))->run();
+
         // Seed Super Admin
         $users = $this->firebase->getUsers();
         $exists = collect($users ?? [])->firstWhere('email', 'superadmin@gmail.com');
