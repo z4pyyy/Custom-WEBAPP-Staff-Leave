@@ -58,6 +58,12 @@ Route::middleware(['auth', CheckPagePermission::class])->group(function () {
     // 🔹 Notifications
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::get('/notifications/mark-all-read', [NotificationController::class, 'markAllRead'])->name('notifications.markAllRead');
+    
+    Route::get('/notifications/read/{id}', function ($id) {
+    $notification = auth()->user()->notifications()->findOrFail($id);
+    $notification->markAsRead();
+    return redirect($notification->data['url'] ?? '/dashboard');
+    })->name('notifications.read');
 
 // 🗓️ Leave Management
 Route::middleware('auth')->group(function () {
