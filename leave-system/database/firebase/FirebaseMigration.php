@@ -19,6 +19,7 @@ class FirebaseMigration
         $this->firebase->createEmptyStructure([
             'users' => [],
             'roles' => [],
+            'page_permissions' => [],
             'settings' => [
                 'system_name' => 'Leave Management System',
             ],

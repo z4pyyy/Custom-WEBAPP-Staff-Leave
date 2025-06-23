@@ -85,8 +85,8 @@
                     @endif
 
                     @if($role === 1)
-                        <li class="nav-item has-treeview {{ in_array($segment, ['reports', 'holidays', 'system']) ? 'menu-open' : '' }}">
-                            <a href="#" class="nav-link {{ in_array($segment, ['reports', 'holidays', 'system']) ? 'active' : '' }}">
+                        <li class="nav-item has-treeview {{ in_array($segment, ['reports', 'holidays', 'system', 'page-permission']) ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ in_array($segment, ['reports', 'holidays', 'system', 'page-permission']) ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-cogs"></i>
                                 <p>
                                     Reports & System
@@ -112,8 +112,14 @@
                                         <p>System Settings</p>
                                     </a>
                                 </li>
-                            </ul>
-                        </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.page-permission') }}" class="nav-link {{ request()->is('page-permission') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Page Permissions</p>
+                                    </a>
+                                </li>
+                            </li>
+                        </ul>
                     @endif
 
                     <li class="nav-item mt-3">
