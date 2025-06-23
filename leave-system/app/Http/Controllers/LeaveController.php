@@ -10,6 +10,12 @@ use Illuminate\Notifications\DatabaseNotification;
 
 class LeaveController extends Controller
 {
+    public function index()
+    {
+        $leaves = Leave::where('user_id', auth()->id())->get();
+        return view('leave.index', compact('leaves'));
+    }
+
     public function create()
     {
         return view('leave.apply');
@@ -33,8 +39,17 @@ class LeaveController extends Controller
             'status' => 'Pending',
         ]);
 
+        // ✅ 确保 leave 带上 user 关系
+        $leave->load('user');
+
+        // 🔔 通知管理层
+        $admins = User::whereIn('role_id', [1, 2])->get();
+        foreach ($admins as $admin) {
+            $admin->notify(new LeaveRequestNotification($leave));
+        }
+
         // 🔔 发送通知给所有管理员
-        $admins = User::where('role_id', 2)->get();
+        $admins = User::whereIn('role_id', [1, 2])->get(); // Admin and Management
         foreach ($admins as $admin) {
             $admin->notify(new LeaveRequestNotification($leave));
         }

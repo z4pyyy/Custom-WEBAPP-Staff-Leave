@@ -1,13 +1,16 @@
 <nav class="main-header navbar navbar-expand navbar-white navbar-light">
     <!-- Left navbar links -->
     <ul class="navbar-nav">
-        <li class="nav-item">
+        <!-- <li class="nav-item">
             <a class="nav-link" data-widget="pushmenu" href="#" role="button">
                 <i class="fas fa-bars"></i>
             </a>
-        </li>
+        </li> -->
         <li class="nav-item d-none d-sm-inline-block">
-            <a href="{{ url('/dashboard') }}" class="nav-link">Dashboard</a>
+            <a href="{{ url('/dashboard') }}" class="nav-link d-flex align-items-center">
+                <img src="{{ asset('images/logo.jpg') }}" alt="Logo" width="60" height="60" class="mr-2">
+                <span class="ml-2 font-weight-bold h5">Dashboard</span>
+            </a>
         </li>
     </ul>
 
@@ -19,30 +22,34 @@
             $notifications = auth()->user()->unreadNotifications->take(5);
         @endphp
         <li class="nav-item dropdown">
-            <a class="nav-link" data-toggle="dropdown" href="#">
-                <i class="far fa-bell"></i>
-                @if($notifications->count() > 0)
-                    <span class="badge badge-warning navbar-badge">{{ $notifications->count() }}</span>
-                @endif
-            </a>
-            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                <span class="dropdown-header">{{ $notifications->count() }} Notifications</span>
-                <div class="dropdown-divider"></div>
+        <a class="nav-link" href="#" data-toggle="dropdown" aria-expanded="false">
+            <i class="far fa-bell"></i>
+            @if($notifications->count())
+                <span class="badge badge-warning navbar-badge">{{ $notifications->count() }}</span>
+            @endif
+        </a>
 
-                @forelse($notifications as $notification)
-                    <a href="{{ url('/notifications/read/' . $notification->id) }}" class="dropdown-item">
+        <!-- 移除 data-bs-popper / data-toggle="dropdown" / aria-expanded -->
+        <ul class="dropdown-menu notification-dropdown">
+            <span class="dropdown-header">{{ $notifications->count() }} Notifications</span>
+           @foreach(auth()->user()->unreadNotifications as $notification)
+                <a href="{{ route('notifications.read', $notification->id) }}" class="dropdown-item notification-item">
+                    <div class="notification-text">
                         <i class="fas fa-envelope mr-2"></i>
-                        {{ $notification->data['message'] ?? 'New notification' }}
-                        <span class="float-right text-muted text-sm">{{ $notification->created_at->diffForHumans() }}</span>
-                    </a>
-                    <div class="dropdown-divider"></div>
-                @empty
-                    <span class="dropdown-item text-muted">No new notifications</span>
-                @endforelse
+                        <span class="message">{{ $notification->data['message'] ?? 'New Notification' }}</span>
+                    </div>
+                    <div class="notification-time">
+                        {{ $notification->created_at->diffForHumans() }}
+                    </div>
+                </a>
+            @endforeach
+            <div class="dropdown-divider"></div>
+            <a href="{{ route('notifications.markAllRead') }}" class="dropdown-footer text-danger">Mark All as Read</a>
 
-                <a href="{{ url('/notifications') }}" class="dropdown-item dropdown-footer">See All Notifications</a>
-            </div>
-        </li>
+            <a href="{{ route('notifications.index') }}" class="dropdown-footer">See All Notifications</a>
+        </ul>
+    </li>
+
 
         <!-- Dark mode toggle -->
         <li class="nav-item">
@@ -95,6 +102,5 @@
         }
     });
 </script>
-
 
 </nav>

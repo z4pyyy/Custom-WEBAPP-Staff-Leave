@@ -45,6 +45,7 @@ Route::get('/test-notification', function () {
 });
 
     // 🔹 Leave Management
+    Route::get('/leave', [LeaveController::class, 'index'])->name('leave.index');
     Route::get('/leave/apply', [LeaveController::class, 'create'])->name('leave.apply');
     Route::post('/leave/apply', [LeaveController::class, 'store']);
     Route::get('/leave/history', [LeaveController::class, 'history'])->name('leave.history');
@@ -52,7 +53,8 @@ Route::get('/test-notification', function () {
     Route::post('/leave/store', [LeaveController::class, 'store'])->name('leave.store');
 
     // 🔹 Notifications
-    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('/notifications/mark-all-read', [NotificationController::class, 'markAllRead'])->name('notifications.markAllRead');
 
     // ✅ 点击通知时标记为已读 + 跳转
     Route::get('/notifications/read/{id}', function ($id) {

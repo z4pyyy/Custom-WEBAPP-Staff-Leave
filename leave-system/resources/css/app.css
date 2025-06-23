@@ -28,13 +28,3 @@ body.dark-mode .nav-sidebar .nav-link.active {
     color: white;
     font-weight: bold;
 }
-
-.notification-item {
-    display: flex;
-    align-items: center;
-    padding: 8px 12px;
-    border-bottom: 1px solid #ddd;
-    gap: 10px;
-}
-
-
