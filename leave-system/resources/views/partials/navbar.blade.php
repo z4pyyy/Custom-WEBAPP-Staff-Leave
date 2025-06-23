@@ -1,16 +1,13 @@
 <nav class="main-header navbar navbar-expand navbar-white navbar-light">
     <!-- Left navbar links -->
     <ul class="navbar-nav">
-        <!-- <li class="nav-item">
+        <li class="nav-item">
             <a class="nav-link" data-widget="pushmenu" href="#" role="button">
                 <i class="fas fa-bars"></i>
             </a>
-        </li> -->
+        </li>
         <li class="nav-item d-none d-sm-inline-block">
-            <a href="{{ url('/dashboard') }}" class="nav-link d-flex align-items-center">
-                <img src="{{ asset('images/logo.jpg') }}" alt="Logo" width="60" height="60" class="mr-2">
-                <span class="ml-2 font-weight-bold h5">Dashboard</span>
-            </a>
+            <a href="{{ url('/dashboard') }}" class="nav-link">Dashboard</a>
         </li>
     </ul>
 

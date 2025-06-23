@@ -22,14 +22,25 @@
                         <li class="nav-item has-treeview {{ in_array($segment, ['account', 'admin']) ? 'menu-open' : '' }}">
                             <a href="#" class="nav-link {{ in_array($segment, ['account', 'admin']) ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-users-cog"></i>
-                                <p>Manage Users</p>
+                                <p>
+                                    User Management
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
                             </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ url('/account/settings') }}" class="nav-link">
-                                <i class="nav-icon fas fa-user-cog"></i>
-                                <p>Account Settings</p>
-                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.users') }}" class="nav-link {{ request()->is('admin/users') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Manage Users</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ url('/account/settings') }}" class="nav-link {{ request()->is('account/settings') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Account Settings</p>
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                     @endif
 

@@ -8,7 +8,6 @@
     padding-top: 20px;
     padding-left: 10px;
     background-color: #1e293b;
-    background-color: #1e293b;
     color: #fff;
     z-index: 1040;
 }
@@ -40,8 +39,8 @@
 .nav-sidebar .nav-link {
     text-align: left;
     width: 100%;
-    padding: 20px 20px;
-    font-size: 18px;
+    padding: 10px 20px;
+    font-size: 15px;
     color: #cbd5e1; /* Tailwind slate-300 */
 }
 
