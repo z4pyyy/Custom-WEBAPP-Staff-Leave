@@ -1,3 +1,37 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+body.dark-mode .main-header {
+    background-color: #1f2937 !important;
+    color: white;
+}
+
+body.dark-mode .content-wrapper {
+    background-color: #1e1e1e;
+}
+
+body.dark-mode .nav-sidebar .nav-link {
+    color: #cbd5e1;
+}
+
+body.dark-mode .nav-sidebar .nav-link.active {
+    background-color: #0284c7;
+    color: white;
+    font-weight: bold;
+}
+
+.notification-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    border-bottom: 1px solid #ddd;
+    gap: 10px;
+}
+
+

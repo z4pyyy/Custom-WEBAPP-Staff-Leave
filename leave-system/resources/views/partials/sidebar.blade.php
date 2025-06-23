@@ -1,96 +1,118 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="{{ url('/dashboard') }}" class="brand-link">
-        <span class="brand-text font-weight-light">Leave System</span>
+    <a href="{{ url('/dashboard') }}" class="brand-link text-center">
+        <span class="brand-text font-weight-light">Welcome, Admin</span>
     </a>
 
     <!-- Sidebar -->
     <div class="sidebar">
         <!-- Sidebar Menu -->
         <nav class="mt-2">
-            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-
+            <ul class="nav nav-pills nav-sidebar flex-column"
+                data-widget="treeview"
+                role="menu"
+                data-accordion="false">
                 @auth
                     @php
                         $role = Auth::user()->role_id;
+                        $segment = request()->segment(1);
                     @endphp
 
-                    {{-- Superadmin --}}
                     @if($role === 1)
-                        <li class="nav-header">USER MANAGEMENT</li>
-                        <li class="nav-item">
-                            <a href="{{ route('admin.users') }}" class="nav-link">
+                        <li class="nav-item has-treeview {{ in_array($segment, ['account', 'admin']) ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ in_array($segment, ['account', 'admin']) ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-users-cog"></i>
-                                <p>Manage Users</p>
+                                <p>
+                                    User Management
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
                             </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ url('/account/settings') }}" class="nav-link">
-                                <i class="nav-icon fas fa-user-cog"></i>
-                                <p>Account Settings</p>
-                            </a>
-                        </li>
-                    @endif
-
-                    @if(in_array($role, [1, 2, 3]))
-                        <li class="nav-header">LEAVE MANAGEMENT</li>
-                        <li class="nav-item">
-                            <a href="{{ url('/leave/apply') }}" class="nav-link">
-                                <i class="nav-icon fas fa-calendar-plus"></i>
-                                <p>Apply for Leave</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ url('/leave/history') }}" class="nav-link">
-                                <i class="nav-icon fas fa-history"></i>
-                                <p>Leave History</p>
-                            </a>
-                        </li>
-                    @endif
-
-                    @if(in_array($role, [1, 2]))
-                        <li class="nav-item">
-                            <a href="{{ url('/leave/approve') }}" class="nav-link">
-                                <i class="nav-icon fas fa-check-circle"></i>
-                                <p>Approve Leave</p>
-                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.users') }}" class="nav-link {{ request()->is('admin/users') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Manage Users</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ url('/account/settings') }}" class="nav-link {{ request()->is('account/settings') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Account Settings</p>
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                     @endif
 
                     @if(in_array($role, [1, 2, 3]))
-                        <li class="nav-item">
-                            <a href="{{ url('/leave/calendar') }}" class="nav-link">
+                        <li class="nav-item has-treeview {{ in_array($segment, ['leave', 'notifications']) ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ in_array($segment, ['leave', 'notifications']) ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-calendar-alt"></i>
-                                <p>Leave Calendar</p>
+                                <p>
+                                    Leave Management
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
                             </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ url('/notifications') }}" class="nav-link">
-                                <i class="nav-icon fas fa-bell"></i>
-                                <p>Notifications</p>
-                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ url('/leave/apply') }}" class="nav-link {{ request()->is('leave/apply') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Apply for Leave</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ url('/leave/history') }}" class="nav-link {{ request()->is('leave/history') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Leave History</p>
+                                    </a>
+                                </li>
+                                @if(in_array($role, [1, 2]))
+                                    <li class="nav-item">
+                                        <a href="{{ url('/leave/approve') }}" class="nav-link {{ request()->is('leave/approve') ? 'active' : '' }}">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Approve Leave</p>
+                                        </a>
+                                    </li>
+                                @endif
+                                <li class="nav-item">
+                                    <a href="{{ url('/leave/calendar') }}" class="nav-link {{ request()->is('leave/calendar') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Leave Calendar</p>
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                     @endif
 
                     @if($role === 1)
-                        <li class="nav-header">REPORTS & SYSTEM</li>
-                        <li class="nav-item">
-                            <a href="{{ url('/reports') }}" class="nav-link">
-                                <i class="nav-icon fas fa-file-alt"></i>
-                                <p>Generate Reports</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ url('/holidays') }}" class="nav-link">
-                                <i class="nav-icon fas fa-umbrella-beach"></i>
-                                <p>Public Holidays</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ url('/system/settings') }}" class="nav-link">
+                        <li class="nav-item has-treeview {{ in_array($segment, ['reports', 'holidays', 'system']) ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ in_array($segment, ['reports', 'holidays', 'system']) ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-cogs"></i>
-                                <p>System Settings</p>
+                                <p>
+                                    Reports & System
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
                             </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ url('/reports') }}" class="nav-link {{ request()->is('reports') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Generate Reports</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ url('/holidays') }}" class="nav-link {{ request()->is('holidays') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Public Holidays</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ url('/system/settings') }}" class="nav-link {{ request()->is('system/settings') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>System Settings</p>
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                     @endif
 
@@ -104,9 +126,7 @@
                             @csrf
                         </form>
                     </li>
-
                 @endauth
-
             </ul>
         </nav>
     </div>

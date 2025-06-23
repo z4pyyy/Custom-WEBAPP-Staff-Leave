@@ -19,6 +19,10 @@
         "vite": "^6.2.4"
     },
     "dependencies": {
-        "admin-lte": "^4.0.0-beta3"
+        "@fortawesome/fontawesome-free": "^6.7.2",
+        "admin-lte": "^4.0.0-beta3",
+        "bootstrap": "^5.3.7",
+        "icheck-bootstrap": "^3.0.1",
+        "jquery": "^3.7.1"
     }
 }

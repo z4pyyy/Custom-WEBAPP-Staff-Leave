@@ -5,3 +5,14 @@
     align-items: center;
     padding: 10px 20px;
 }
+
+.navbar-nav .nav-link.d-flex.align-items-center {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; /* 或使用 margin-right */
+}
+
+.dropdown-item i {
+    width: 20px; /* 固定 icon 区域宽度 */
+    text-align: center;
+}
