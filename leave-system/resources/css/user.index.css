@@ -1,0 +1,44 @@
+/* --- User Management Styles --- */
+
+.card-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #343a40;
+}
+
+.table th,
+.table td {
+    vertical-align: middle;
+    font-size: 0.95rem;
+}
+
+.table td .btn {
+    margin-right: 5px;
+    transition: 0.2s ease-in-out;
+}
+
+.table td .btn:hover {
+    transform: scale(1.1);
+}
+
+.badge {
+    font-size: 0.85rem;
+    padding: 6px 10px;
+}
+
+.alert {
+    font-size: 0.9rem;
+}
+
+/* Add hover glow for edit/delete buttons */
+.btn-warning:hover {
+    background-color: #e0a800;
+    border-color: #d39e00;
+    box-shadow: 0 0 5px rgba(224, 168, 0, 0.5);
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+    box-shadow: 0 0 5px rgba(200, 35, 51, 0.5);
+}

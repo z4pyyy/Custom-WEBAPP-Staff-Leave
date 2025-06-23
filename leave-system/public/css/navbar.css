@@ -3,7 +3,8 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
+    padding: 30px 20px;
+
 }
 
 .navbar-nav .nav-link.d-flex.align-items-center {

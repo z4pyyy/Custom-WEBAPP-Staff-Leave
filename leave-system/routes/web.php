@@ -10,6 +10,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\HolidayController;
 use App\Http\Controllers\SystemController;
 use App\Http\Controllers\AccountController;
+use Kreait\Firebase\Factory;
 
 Route::get('/', function () {
     return view('welcome');
@@ -19,12 +20,13 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+
 Route::middleware('auth')->group(function () {
+    Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
 
 Route::middleware(['auth'])->group(function () {
 // 🔸 临时通知测试用
@@ -72,12 +74,14 @@ Route::get('/test-notification', function () {
 
     // 🔸 Admin Only
     Route::middleware(['can:is-admin'])->group(function () {
-        Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users');
+        Route::get('/admin/users/{id}/edit', [UserController::class, 'edit'])->name('admin.users.edit');
+        Route::post('/admin/users/{id}', [UserController::class, 'update'])->name('admin.users.update');
+        Route::delete('/admin/users/{id}', [UserController::class, 'destroy'])->name('admin.users.delete');
+
         Route::get('/reports', [ReportController::class, 'index'])->name('reports');
         Route::get('/holidays', [HolidayController::class, 'index'])->name('holidays');
         Route::get('/system/settings', [SystemController::class, 'index'])->name('system.settings');
         Route::post('/system/settings', [SystemController::class, 'update']);
     });
 });
-
 require __DIR__.'/auth.php';

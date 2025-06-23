@@ -37,14 +37,17 @@
             </div>
         @endisset
 
-        {{-- Main Page Content --}}
-        <div class="content">
+        <!-- Main content -->
+        <section class="content">
             <div class="container-fluid">
-                {{ $slot }}
+                @yield('content')
             </div>
-        </div>
+        </section>
     </div>
 
-</div>
+    <!-- Footer -->
+    @include('partials.footer')
+
+</div> <!-- /.wrapper -->
 </body>
 </html>
