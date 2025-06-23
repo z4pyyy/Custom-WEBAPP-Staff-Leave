@@ -54,33 +54,14 @@ Route::middleware(['auth', CheckPagePermission::class])->group(function () {
     Route::delete('/admin/users/{id}', [UserController::class, 'destroy'])->name('admin.users.delete');
 });
 
-// 🔔 Notification Testing (Temporary)
-Route::middleware('auth')->get('/test-notification', function () {
-    $user = auth()->user();
 
-    $dummyLeave = (object)[
-        'id' => 999,
-        'user' => (object)['name' => $user->name],
-        'created_at' => now(),
-    ];
-
-    $user->notify(new \App\Notifications\LeaveRequestNotification($dummyLeave));
-    return redirect('/dashboard')->with('success', 'Test notification sent!');
-});
-
-// 🔔 Notifications
-Route::middleware('auth')->group(function () {
-    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
-
-    Route::get('/notifications/read/{id}', function ($id) {
-        $notification = auth()->user()->notifications()->findOrFail($id);
-        $notification->markAsRead();
-        return redirect($notification->data['url'] ?? '/dashboard');
-    })->name('notifications.read');
-});
+    // 🔹 Notifications
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('/notifications/mark-all-read', [NotificationController::class, 'markAllRead'])->name('notifications.markAllRead');
 
 // 🗓️ Leave Management
 Route::middleware('auth')->group(function () {
+    Route::get('/leave', [LeaveController::class, 'index'])->name('leave.index');
     Route::get('/leave/apply', [LeaveController::class, 'create'])->name('leave.apply');
     Route::post('/leave/apply', [LeaveController::class, 'store']);
     Route::post('/leave/store', [LeaveController::class, 'store'])->name('leave.store');
