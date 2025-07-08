@@ -28,3 +28,9 @@ body.dark-mode .nav-sidebar .nav-link.active {
     color: white;
     font-weight: bold;
 }
+
+.rejection-reason-cell {
+    white-space: normal;
+    word-break: break-word;
+    max-width: 250px;
+}

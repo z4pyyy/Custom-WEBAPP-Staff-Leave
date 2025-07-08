@@ -66,4 +66,10 @@ class FirebaseService
         return $this->database->getReference($path)->remove();
     }
 
+    public function push(string $path, array $data)
+    {
+        return $this->database->getReference($path)->push($data);
+    }
+
+
 }

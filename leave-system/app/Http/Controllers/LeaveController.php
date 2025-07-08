@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\Leave; // 你需要先创建 Leave 模型
+use App\Models\Leave; 
 use Illuminate\Http\Request;
 use App\Notifications\LeaveRequestNotification;
 use Illuminate\Notifications\DatabaseNotification;
@@ -39,20 +39,32 @@ class LeaveController extends Controller
             'status' => 'Pending',
         ]);
 
-        // ✅ 确保 leave 带上 user 关系
+        // 确保 leave 带上 user 关系
         $leave->load('user');
 
-        // 🔔 通知管理层
+        // 通知管理层
         $admins = User::whereIn('role_id', [1, 2])->get();
         foreach ($admins as $admin) {
             $admin->notify(new LeaveRequestNotification($leave));
         }
 
-        // 🔔 发送通知给所有管理员
+        // 发送通知给所有管理员
         $admins = User::whereIn('role_id', [1, 2])->get(); // Admin and Management
         foreach ($admins as $admin) {
             $admin->notify(new LeaveRequestNotification($leave));
         }
+        
+        app('firebase')->push('leaves', [
+            'id' => $leave->id,
+            'user_id' => $leave->user_id,
+            'user_name' => $leave->user->name ?? 'Unknown',
+            'type' => $leave->type,
+            'start_date' => $leave->start_date,
+            'end_date' => $leave->end_date,
+            'reason' => $leave->reason,
+            'status' => $leave->status,
+            'created_at' => $leave->created_at->toDateTimeString(),
+        ]);
 
         return redirect()->route('leave.index')->with('success', 'Leave request submitted.');
     }
@@ -67,7 +79,7 @@ class LeaveController extends Controller
     {
         $leave = Leave::findOrFail($id);
 
-        // ✅ 处理点击通知时自动标记为已读
+        // 处理点击通知时自动标记为已读
         if (request()->has('notification_id')) {
             $notification = DatabaseNotification::find(request()->get('notification_id'));
             if ($notification && $notification->notifiable_id === auth()->id()) {
@@ -77,4 +89,98 @@ class LeaveController extends Controller
 
         return view('leave.approve', compact('leave'));
     }
+
+    public function approve($id)
+    {
+        $leave = Leave::findOrFail($id);
+        $leave->status = 'Approved';
+        $leave->rejection_reason = null;
+        $leave->save();
+
+        // Firebase leave status
+        app('firebase')->set("leaves/{$leave->id}", [
+            'id' => $leave->id,
+            'user_id' => $leave->user_id,
+            'user_name' => $leave->user->name ?? 'Unknown',
+            'type' => $leave->type,
+            'start_date' => $leave->start_date,
+            'end_date' => $leave->end_date,
+            'reason' => $leave->reason,
+            'status' => $leave->status,
+            'rejection_reason' => null,
+            'created_at' => $leave->created_at->toDateTimeString(),
+        ]);
+
+        return redirect()->route('leave.manage')->with('success', 'Leave approved.');
+    }
+
+    public function reject(Request $request)
+    {
+        $request->validate([
+            'leave_id' => 'required|exists:leaves,id',
+            'rejection_reason' => 'nullable|string|max:1000',
+        ]);
+
+        $leave = Leave::findOrFail($request->leave_id);
+        $leave->status = 'Rejected';
+        $leave->rejection_reason = $request->input('rejection_reason');
+        $leave->save();
+
+        // Firebase leave status
+        app('firebase')->set("leaves/{$leave->id}", [
+            'id' => $leave->id,
+            'user_id' => $leave->user_id,
+            'user_name' => $leave->user->name ?? 'Unknown',
+            'type' => $leave->type,
+            'start_date' => $leave->start_date,
+            'end_date' => $leave->end_date,
+            'reason' => $leave->reason,
+            'status' => $leave->status,
+            'rejection_reason' => $leave->rejection_reason,
+            'created_at' => $leave->created_at->toDateTimeString(),
+        ]);
+
+        return redirect()->route('leave.manage')->with('success', 'Leave rejected.');
+    }
+
+    public function manage(Request $request)
+    {
+        if (!in_array(auth()->user()->role_id, [1, 2])) {
+            abort(403);
+        }
+
+        $query = Leave::with('user');
+
+        // 搜索：姓名
+        if ($request->filled('name')) {
+            $query->whereHas('user', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->name . '%');
+            });
+        }
+
+        // 搜索：开始日期
+        if ($request->filled('start_date')) {
+            $query->whereDate('start_date', $request->start_date);
+        }
+
+        // 搜索：状态
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // 自定义状态排序
+        $leaves = $query->orderByRaw("
+            CASE 
+                WHEN status = 'Pending' THEN 1
+                WHEN status = 'Rejected' THEN 2
+                WHEN status = 'Approved' THEN 3
+                ELSE 4
+            END
+        ")
+        ->orderByDesc('created_at')
+        ->get();
+
+        return view('leave.manage', compact('leaves'));
+    }
+
 }

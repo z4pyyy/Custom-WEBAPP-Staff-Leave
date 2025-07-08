@@ -20,6 +20,7 @@ class FirebaseMigration
             'users' => [],
             'roles' => [],
             'page_permissions' => [],
+            'leaves' => [],
             'settings' => [
                 'system_name' => 'Leave Management System',
             ],

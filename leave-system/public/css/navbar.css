@@ -13,6 +13,13 @@
     gap: 0.5rem; /* 或使用 margin-right */
 }
 
+.container-fluid {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 auto;
+    padding: 10px;
+}
+
 @media (max-width: 576px) {
     .navbar-nav .dropdown-menu {
         width: 100vw !important;

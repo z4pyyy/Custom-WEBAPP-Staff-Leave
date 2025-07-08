@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
     <link rel="stylesheet" href="{{ asset('css/navbar.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin.blade.css') }}">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">

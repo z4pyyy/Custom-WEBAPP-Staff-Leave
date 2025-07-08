@@ -68,9 +68,9 @@
                                 </li>
                                 @if(in_array($role, [1, 2]))
                                     <li class="nav-item">
-                                        <a href="{{ url('/leave/approve') }}" class="nav-link {{ request()->is('leave/approve') ? 'active' : '' }}">
+                                        <a href="{{ route('leave.manage') }}" class="nav-link {{ request()->is('leave/manage') ? 'active' : '' }}">
                                             <i class="far fa-circle nav-icon"></i>
-                                            <p>Approve Leave</p>
+                                            <p>Manage Leave</p>
                                         </a>
                                     </li>
                                 @endif

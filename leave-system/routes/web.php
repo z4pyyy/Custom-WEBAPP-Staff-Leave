@@ -10,7 +10,7 @@ use App\Http\Controllers\{
     NotificationController,
     PagePermissionController,
     ProfileController,
-    ReportController,
+    // ReportController,
     SystemController,
     UserController
 };
@@ -67,35 +67,33 @@ Route::middleware(['auth', CheckPagePermission::class])->group(function () {
 
 // 🗓️ Leave Management
 Route::middleware('auth')->group(function () {
-    Route::get('/leave', [LeaveController::class, 'index'])->name('leave.index');
+    Route::get('/leave', [LeaveController::class, 'index'])->name('leave.index'); // 管理页面（显示所有记录）
     Route::get('/leave/apply', [LeaveController::class, 'create'])->name('leave.apply');
-    Route::post('/leave/apply', [LeaveController::class, 'store']);
     Route::post('/leave/store', [LeaveController::class, 'store'])->name('leave.store');
-
     Route::get('/leave/history', [LeaveController::class, 'history'])->name('leave.history');
     Route::get('/leave/calendar', [LeaveController::class, 'calendar'])->name('leave.calendar');
+    Route::get('/leave/manage', [LeaveController::class, 'manage'])->name('leave.manage');
 });
 
 // ✅ Leave Approval (Manager/Admin)
 Route::middleware(['auth', 'can:approve-leave'])->group(function () {
-    Route::get('/leave/approve', [LeaveController::class, 'approvePage'])->name('leave.approve');
-    Route::get('/leave/approve/{id}', [LeaveController::class, 'showApprovalForm'])->name('leave.approve.single');
-    Route::post('/leave/approve/{id}', [LeaveController::class, 'processApproval']);
+    Route::post('/leave/{id}/approve', [LeaveController::class, 'approve'])->name('leave.approve');
+    Route::post('/leave/reject', [LeaveController::class, 'reject'])->name('leave.reject');
 });
 
 // ⚙️ System Settings + Admin-Only Panels
 Route::middleware(['auth', 'can:is-admin'])->group(function () {
-    Route::get('/reports', [ReportController::class, 'index'])->name('reports');
-    Route::get('/holidays', [HolidayController::class, 'index'])->name('holidays');
+    // Route::get('/reports', [ReportController::class, 'index'])->name('reports');
+    // Route::get('/holidays', [HolidayController::class, 'index'])->name('holidays');
     
-    Route::get('/system/settings', [SystemController::class, 'index'])->name('system.settings');
-    Route::post('/system/settings', [SystemController::class, 'update']);
+    // Route::get('/system/settings', [SystemController::class, 'index'])->name('system.settings');
+    // Route::post('/system/settings', [SystemController::class, 'update']);
 });
 
 // 👤 Account Settings
 Route::middleware('auth')->group(function () {
-    Route::get('/account/settings', [AccountController::class, 'edit'])->name('account.settings');
-    Route::post('/account/settings', [AccountController::class, 'update']);
+    // Route::get('/account/settings', [AccountController::class, 'edit'])->name('account.settings');
+    // Route::post('/account/settings', [AccountController::class, 'update']);
 });
 
 // 🛡️ Auth routes

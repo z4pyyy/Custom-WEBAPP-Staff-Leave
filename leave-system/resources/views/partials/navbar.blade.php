@@ -1,14 +1,15 @@
 <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <div class="container-fluid">
     <!-- Left navbar links -->
     <ul class="navbar-nav">
-        <!-- <li class="nav-item">
+        <li class="nav-item">
             <a class="nav-link" data-widget="pushmenu" href="#" role="button">
                 <i class="fas fa-bars"></i>
             </a>
-        </li> -->
+        </li>
         <li class="nav-item d-none d-sm-inline-block">
             <a href="{{ url('/dashboard') }}" class="nav-link d-flex align-items-center">
-                <img src="{{ asset('images/logo.jpg') }}" alt="Logo" width="60" height="60" class="mr-2">
+                <img src="{{ asset('images/homslivinglogo.jpg') }}" alt="Logo" width="60" height="60" class="mr-2">
                 <span class="ml-2 font-weight-bold h5">Dashboard</span>
             </a>
         </li>
@@ -63,7 +64,7 @@
             <li class="nav-item dropdown">  
                 <a id="navbarDropdown" class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button"
                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <img src="{{ asset('images/Totoro.jpg') }}" class="rounded-circle" width="30" height="30" alt="User Image">
+                    <img src="{{ asset('images/Totoro.jpg') }}" class="rounded-circle" width="40" height="40" alt="User Image">
                     <span class="ml-2">{{ Auth::user()->name }}</span>
                 </a>
 
@@ -102,5 +103,5 @@
         }
     });
 </script>
-
+</div>
 </nav>
