@@ -96,6 +96,7 @@ class LeaveController extends Controller
         $leave->status = 'Approved';
         $leave->rejection_reason = null;
         $leave->save();
+        $leave->user->notify(new LeaveRequestNotification($leave, 'Your leave request has been approved.'));
 
         // Firebase leave status
         app('firebase')->set("leaves/{$leave->id}", [
@@ -125,6 +126,7 @@ class LeaveController extends Controller
         $leave->status = 'Rejected';
         $leave->rejection_reason = $request->input('rejection_reason');
         $leave->save();
+        $leave->user->notify(new LeaveRequestNotification($leave, 'Your leave request has been rejected.'));
 
         // Firebase leave status
         app('firebase')->set("leaves/{$leave->id}", [
