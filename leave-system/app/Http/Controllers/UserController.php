@@ -14,6 +14,42 @@ class UserController extends Controller
         $this->firebase = $firebase;
     }
 
+    public function create()
+    {
+        return view('admin.users.create');
+    }
+
+    // Handle form submission to store new user
+    public function store(Request $request)
+    {
+
+        // Check if email already exists
+        $existingUsers = $this->firebase->getUsers();
+        foreach ($existingUsers ?? [] as $user) {
+            if (($user['email'] ?? '') === $request->input('email')) {
+                return redirect()->back()->withInput()->withErrors(['email' => 'This email is already in use.']);
+            }
+        }
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email',
+            'role_id' => 'required|integer|in:1,2,3',
+        ]);
+
+        $userData = [
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'role_id'  => (int) $request->input('role_id'),
+            'password' => bcrypt('homsliving123'),
+        ];
+
+        $this->firebase->addUser($userData);
+
+        return redirect()->route('admin.users')->with('success', 'New user added!');
+    }
+
+
     // Display all users
     public function index()
     {

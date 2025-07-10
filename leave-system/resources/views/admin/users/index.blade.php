@@ -3,9 +3,16 @@
 @section('content')
 <div class="container-fluid">
     <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h3 class="card-title">User Management</h3>
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center w-100">
+                <h3 class="card-title mb-0">User Management</h3>
+                <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
+                    <i class="fas fa-user-plus"></i> Add User
+                </a>
+            </div>
         </div>
+
+
 
         @if (session('success'))
             <div class="alert alert-success m-3">{{ session('success') }}</div>

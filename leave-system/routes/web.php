@@ -32,10 +32,13 @@ Route::middleware('auth')->group(function () {
 // ✅ User Management (All routes protected by Firebase-based permission check)
 Route::middleware(['auth', CheckPagePermission::class])->group(function () {
     Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users');
+    Route::get('/admin/users/create', [UserController::class, 'create'])->name('admin.users.create');
+    Route::post('/admin/users', [UserController::class, 'store'])->name('admin.users.store');
     Route::get('/admin/users/{id}/edit', [UserController::class, 'edit'])->name('admin.users.edit');
     Route::post('/admin/users/{id}', [UserController::class, 'update'])->name('admin.users.update');
     Route::delete('/admin/users/{id}', [UserController::class, 'destroy'])->name('admin.users.delete');
 });
+
 
 
 // 🔐 Page Permission Management (Superadmin Only)
