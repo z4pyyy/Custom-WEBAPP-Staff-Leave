@@ -7,6 +7,8 @@ use App\Models\Leave;
 use Illuminate\Http\Request;
 use App\Notifications\LeaveRequestNotification;
 use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\JsonResponse;
 
 class LeaveController extends Controller
 {
@@ -185,4 +187,46 @@ class LeaveController extends Controller
         return view('leave.manage', compact('leaves'));
     }
 
+
+
+    public function calendar()
+    {
+        return view('leave.calendar');
+    }
+
+    public function calendarData(): JsonResponse
+    {
+        $user = Auth::user();
+        $query = Leave::query();
+
+        // 权限判断
+        if ($user->role === 'Employee') {
+            $query->where('user_id', $user->id);
+        }
+
+        $leaves = $query->where('status', 'Approved')->with('user')->get();
+
+        $events = $leaves->map(function ($leave) {
+            $color = match (strtolower($leave->type)) {
+                'annual' => '#008000',      // Green
+                'medical' => '#2196f3',     // Blue
+                'replacement' => '#ff9800', // Orange
+                'unpaid' => '#f44336',      // Red
+                default => '#9e9e9e',       // Grey fallback
+            };
+
+            return [
+                'title' => $leave->user->name . ' - ' . $leave->type,
+                'start' => $leave->start_date,
+                'end' => date('Y-m-d', strtotime($leave->end_date . ' +1 day')), // FullCalendar exclusive end
+                'color' => $color, 
+                'extendedProps' => [
+                    'reason' => $leave->reason,
+                    'status' => $leave->status,
+                ]
+            ];
+        });
+
+        return response()->json($events);
+    }
 }

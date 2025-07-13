@@ -75,6 +75,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/leave/store', [LeaveController::class, 'store'])->name('leave.store');
     Route::get('/leave/history', [LeaveController::class, 'history'])->name('leave.history');
     Route::get('/leave/calendar', [LeaveController::class, 'calendar'])->name('leave.calendar');
+    Route::get('/leave/calendar/data', [LeaveController::class, 'calendarData'])->name('leave.calendar.data');
     Route::get('/leave/manage', [LeaveController::class, 'manage'])->name('leave.manage');
 });
 
