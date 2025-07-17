@@ -19,6 +19,7 @@ class Leave extends Model
         'end_date',
         'reason',
         'status',
+        'day_length',
         'rejection_reason', 
     ];
 

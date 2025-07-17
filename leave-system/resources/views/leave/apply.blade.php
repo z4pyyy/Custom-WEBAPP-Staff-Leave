@@ -24,8 +24,9 @@
         <input type="date" name="end_date" class="form-control" required>
     </div>
     <div class="form-group">
-        <label for="days">Number of Days</label>
-        <input type="number" name="days" class="form-control" required>
+        <label for="day_length">Leave Days (Fillable 0.5, 1, 1.5)</label>
+        <input type="number" name="day_length" class="form-control" step="0.5" min="0.5" value="1" required>
+    </div>
     <div class="form-group">
         <label for="reason">Reason</label>
         <textarea name="reason" class="form-control" rows="3"></textarea>

@@ -39,6 +39,7 @@ class LeaveController extends Controller
             'type' => $request->type,
             'reason' => $request->reason,
             'status' => 'Pending',
+            'day_length' => $request->day_length,
         ]);
 
         $leave->load('user');

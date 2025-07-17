@@ -73,7 +73,29 @@
                         <td>{{ $leave->type }}</td>
                         <td>{{ $leave->start_date }}</td>
                         <td>{{ $leave->end_date }}</td>
-                        <td>{{ \Carbon\Carbon::parse($leave->start_date)->diffInDays($leave->end_date) + 1 }}</td>
+                                        <td>
+                    @php
+                        $start = \Carbon\Carbon::parse($leave->start_date);
+                        $end = \Carbon\Carbon::parse($leave->end_date);
+                    @endphp
+
+                    @if ($start->eq($end))
+                        @php
+                            $day = $leave->day_length;
+                            $is_float = floor($day) != $day;
+                        @endphp
+
+                        @if ($is_float)
+                            {{ $day }} day(s)
+                        @elseif ($day == 1)
+                            1 day
+                        @else
+                            {{ intval($day) }} days
+                        @endif
+                    @else
+                        {{ $start->diffInDays($end) + 1 }} days
+                    @endif
+                </td>
                         <td>{{ $leave->reason }}</td>
                         <td>{{ $leave->status }}</td>
                     </tr>
