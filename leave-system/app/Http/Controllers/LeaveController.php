@@ -229,4 +229,37 @@ class LeaveController extends Controller
 
         return response()->json($events);
     }
+
+
+    public function report(Request $request)
+    {
+        $query = Leave::with('user');
+
+        // 筛选：月份
+        if ($request->filled('month')) {
+            $query->whereMonth('start_date', $request->month);
+        }
+
+        // 筛选：年份
+        if ($request->filled('year')) {
+            $query->whereYear('start_date', $request->year);
+        }
+
+        // 筛选：类型
+        if ($request->filled('type')) {
+            $query->where('type', $request->type);
+        }
+
+        // 筛选：员工
+        if ($request->filled('user_id')) {
+            $query->where('user_id', $request->user_id);
+        }
+
+        $leaves = $query->orderBy('start_date', 'desc')->get();
+        $users = User::all();
+
+        return view('leave.report', compact('leaves', 'users'));
+    }
 }
+
+

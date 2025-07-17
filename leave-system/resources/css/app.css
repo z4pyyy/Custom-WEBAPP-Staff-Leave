@@ -104,3 +104,46 @@ body.dark-mode .nav-sidebar .nav-link.active {
     box-shadow: none !important;
     padding: 0 !important;
 }
+
+
+/* Report Style */
+.print-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+    align-items: flex-end;
+}
+
+.print-filters > div {
+    flex: 1 1 150px;
+    min-width: 150px;
+}
+
+.print-filters label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.print-filters select {
+    width: 100%;
+    font-size: 14px;
+    padding: 5px;
+}
+
+@media print {
+    .print-filters {
+        flex-wrap: nowrap;
+        gap: 15px;
+    }
+    .print-filters > div {
+        flex: 1 1 140px;
+        min-width: 120px;
+    }
+    .print-filters button {
+        display: none;
+    }
+}
+

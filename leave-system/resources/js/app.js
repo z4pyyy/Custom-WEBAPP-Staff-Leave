@@ -19,6 +19,9 @@ import Alpine from 'alpinejs';
 import { Calendar } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 
+import 'select2';
+import 'select2/dist/css/select2.min.css';
+
 window.Alpine = Alpine;
 Alpine.start();
 
@@ -154,3 +157,17 @@ document.addEventListener('DOMContentLoaded', function () {
     }, 50);
 });
 
+
+// Clear button functionality
+document.getElementById('clearBtn').addEventListener('click', function() {
+    document.querySelectorAll('select.form-select').forEach(e => e.value = '');
+    $('#employee').val(null).trigger('change');
+});
+
+// Select2 initialization for employee search
+document.addEventListener('DOMContentLoaded', function () {
+    $('#employee').select2({
+        placeholder: 'Search Employee...',
+        allowClear: true
+    });
+});

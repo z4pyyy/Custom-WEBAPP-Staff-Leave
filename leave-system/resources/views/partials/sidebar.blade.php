@@ -95,7 +95,7 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="{{ url('/reports') }}" class="nav-link {{ request()->is('reports') ? 'active' : '' }}">
+                                    <a href="{{ url('/leave/report') }}" class="nav-link {{ request()->is('reports') ? 'active' : '' }}">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Generate Reports</p>
                                     </a>

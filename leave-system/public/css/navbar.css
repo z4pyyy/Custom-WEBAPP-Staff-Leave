@@ -10,7 +10,7 @@
 .navbar-nav .nav-link.d-flex.align-items-center {
     display: flex;
     align-items: center;
-    gap: 0.5rem; /* 或使用 margin-right */
+    gap: 0.5rem; 
 }
 
 .navbar .nav-item .badge {

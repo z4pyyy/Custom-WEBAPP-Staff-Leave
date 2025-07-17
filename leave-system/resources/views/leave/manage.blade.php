@@ -19,6 +19,8 @@
     </div>
     <div class="col-md-3">
       <button type="submit" class="btn btn-primary">Search</button>
+      <button type="button" class="btn btn-secondary" onclick="clearFilters()">Clear</button>
+
     </div>
   </div>
 </form>
@@ -101,3 +103,10 @@
     </tbody>
 </table>
 @endsection
+
+
+<script>
+function clearFilters() {
+    window.location.href = "{{ route('leave.manage') }}";
+}
+</script>

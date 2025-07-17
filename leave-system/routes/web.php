@@ -87,17 +87,17 @@ Route::middleware(['auth', 'can:approve-leave'])->group(function () {
 
 // ⚙️ System Settings + Admin-Only Panels
 Route::middleware(['auth', 'can:is-admin'])->group(function () {
-    // Route::get('/reports', [ReportController::class, 'index'])->name('reports');
-    // Route::get('/holidays', [HolidayController::class, 'index'])->name('holidays');
+    Route::get('/leave/report', [LeaveController::class, 'report'])->name('leave.report');
+    Route::get('/holidays', [HolidayController::class, 'index'])->name('holidays');
     
-    // Route::get('/system/settings', [SystemController::class, 'index'])->name('system.settings');
-    // Route::post('/system/settings', [SystemController::class, 'update']);
+    Route::get('/system/settings', [SystemController::class, 'index'])->name('system.settings');
+    Route::post('/system/settings', [SystemController::class, 'update']);
 });
 
 // 👤 Account Settings
 Route::middleware('auth')->group(function () {
-    // Route::get('/account/settings', [AccountController::class, 'edit'])->name('account.settings');
-    // Route::post('/account/settings', [AccountController::class, 'update']);
+    Route::get('/account/settings', [AccountController::class, 'edit'])->name('account.settings');
+    Route::post('/account/settings', [AccountController::class, 'update']);
 });
 
 // 🛡️ Auth routes

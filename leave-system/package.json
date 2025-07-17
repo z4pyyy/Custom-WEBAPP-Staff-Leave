@@ -27,6 +27,7 @@
         "firebase-admin": "^13.4.0",
         "fullcalendar": "^6.1.18",
         "jquery": "^3.7.1",
-        "popper.js": "^1.16.1"
+        "popper.js": "^1.16.1",
+        "select2": "^4.1.0-rc.0"
     }
 }
