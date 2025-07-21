@@ -147,3 +147,24 @@ body.dark-mode .nav-sidebar .nav-link.active {
     }
 }
 
+
+
+/* History Style */
+.filter-select {
+    width: 150px !important;
+}
+
+/* Annual Leave Management */
+.add-new-row,
+.filter-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    width: 70%;
+}
+
+.add-new-row .col,
+.filter-row .col-md-3 {
+    flex: none;
+    width: 280px;
+}

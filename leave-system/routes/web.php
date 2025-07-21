@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\CheckPagePermission;
 use App\Http\Controllers\{
     AccountController,
+    AnnualLeaveBalanceController,
     DashboardController,
     HolidayController,
     LeaveController,
@@ -19,8 +20,9 @@ use App\Http\Controllers\{
 Route::get('/', fn () => view('welcome'));
 
 // 🔒 Authenticated Dashboard
-Route::get('/dashboard', fn () => view('dashboard'))
-    ->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'dashboard'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 // 🔐 Profile
 Route::middleware('auth')->group(function () {
@@ -102,3 +104,12 @@ Route::middleware('auth')->group(function () {
 
 // 🛡️ Auth routes
 require __DIR__.'/auth.php';
+
+// 🔹 Annual Leave Balance Management (Admin & Management)
+Route::middleware(['auth'])->group(function () {
+    Route::get('/balance', [AnnualLeaveBalanceController::class, 'index'])->name('balance.index');
+    Route::post('/balance/update', [AnnualLeaveBalanceController::class, 'update'])->name('balance.update');
+    Route::post('/balance/store', [AnnualLeaveBalanceController::class, 'store'])->name('balance.store');
+    Route::delete('/balance/{id}', [AnnualLeaveBalanceController::class, 'destroy'])->name('balance.destroy');
+});
+

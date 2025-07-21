@@ -254,6 +254,36 @@ class LeaveController extends Controller
 
         return view('leave.report', compact('leaves', 'users'));
     }
+
+    //History
+    public function history(Request $request)
+    {
+        $user = auth()->user();
+        $query = Leave::with('user');
+
+        if ($user->role !== 'admin') {
+            $query->where('user_id', $user->id);
+        }
+
+        // Year Filter
+        if ($request->filled('year')) {
+            $query->whereYear('start_date', $request->year);
+        }
+
+        // Month Filter
+        if ($request->filled('month')) {
+            $query->whereMonth('start_date', $request->month);
+        }
+
+        // Status Filter
+        if ($request->filled('status')) {
+            $query->where('status', strtolower($request->status));
+        }
+
+        $leaves = $query->latest()->paginate(10);
+        return view('leave.history', compact('leaves'));
+    }
+
 }
 
 
