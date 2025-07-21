@@ -82,15 +82,6 @@
                                         </a>
                                     </li>
                                 @endif
-                                @if(in_array($role, [1,2]))
-<li class="nav-item">
-    <a href="{{ route('balance.audit') }}" class="nav-link {{ request()->is('balance/audit') ? 'active' : '' }}">
-        <i class="far fa-circle nav-icon"></i>
-        <p>Audit Trail</p>
-    </a>
-</li>
-@endif
-
                                 <li class="nav-item">
                                     <a href="{{ url('/leave/calendar') }}" class="nav-link {{ request()->is('leave/calendar') ? 'active' : '' }}">
                                         <i class="far fa-circle nav-icon"></i>
