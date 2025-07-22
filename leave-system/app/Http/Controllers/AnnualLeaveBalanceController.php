@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\AnnualLeaveBalance;
 use App\Models\User;
 use Illuminate\Http\Request;
-use App\Models\AnnualLeaveBalanceAudit;
 
 class AnnualLeaveBalanceController extends Controller
 {

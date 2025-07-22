@@ -6,7 +6,7 @@ use App\Http\Controllers\{
     AccountController,
     AnnualLeaveBalanceController,
     DashboardController,
-    HolidayController,
+    PublicHolidayController,
     LeaveController,
     NotificationController,
     PagePermissionController,
@@ -90,10 +90,16 @@ Route::middleware(['auth', 'can:approve-leave'])->group(function () {
 // ⚙️ System Settings + Admin-Only Panels
 Route::middleware(['auth', 'can:is-admin'])->group(function () {
     Route::get('/leave/report', [LeaveController::class, 'report'])->name('leave.report');
-    Route::get('/holidays', [HolidayController::class, 'index'])->name('holidays');
-    
     Route::get('/system/settings', [SystemController::class, 'index'])->name('system.settings');
     Route::post('/system/settings', [SystemController::class, 'update']);
+});
+
+// 🔹 Public Holidays Management (Admin & Management)
+Route::middleware(['auth', 'verified'])->group(function() {
+    Route::get('/holidays', [PublicHolidayController::class, 'index'])->name('public-holiday.index');
+    Route::post('/holidays/store', [PublicHolidayController::class, 'store'])->name('public-holiday.store');
+    Route::post('/holidays/update/{id}', [PublicHolidayController::class, 'update'])->name('public-holiday.update');
+    Route::delete('/holidays/delete/{id}', [PublicHolidayController::class, 'destroy'])->name('public-holiday.destroy');
 });
 
 // 👤 Account Settings

@@ -109,7 +109,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ url('/holidays') }}" class="nav-link {{ request()->is('holidays') ? 'active' : '' }}">
+                                    <a href="{{ route('public-holiday.index') }}" class="nav-link {{ request()->routeIs('public-holiday.index') ? 'active' : '' }}">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Public Holidays</p>
                                     </a>
