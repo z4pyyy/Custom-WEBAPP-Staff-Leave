@@ -12,7 +12,7 @@ use App\Http\Controllers\{
     PagePermissionController,
     ProfileController,
     // ReportController,
-    SystemController,
+    SystemSettingController,
     UserController
 };
 
@@ -90,8 +90,11 @@ Route::middleware(['auth', 'can:approve-leave'])->group(function () {
 // ⚙️ System Settings + Admin-Only Panels
 Route::middleware(['auth', 'can:is-admin'])->group(function () {
     Route::get('/leave/report', [LeaveController::class, 'report'])->name('leave.report');
-    Route::get('/system/settings', [SystemController::class, 'index'])->name('system.settings');
-    Route::post('/system/settings', [SystemController::class, 'update']);
+    Route::get('/system/settings', [SystemSettingController::class, 'index'])->name('system.index');
+    Route::post('/system/settings/updateAnnualLeave', [SystemSettingController::class, 'updateAnnualLeave'])->name('system.updateAnnualLeave');
+    Route::post('/system/settings/updateSystemInfo', [SystemSettingController::class, 'updateSystemInfo'])->name('system.updateSystemInfo');
+    Route::post('/system/settings/storeLeaveType', [SystemSettingController::class, 'storeLeaveType'])->name('system.storeLeaveType');
+    Route::delete('/system/settings/deleteLeaveType/{id}', [SystemSettingController::class, 'deleteLeaveType'])->name('system.deleteLeaveType');
 });
 
 // 🔹 Public Holidays Management (Admin & Management)

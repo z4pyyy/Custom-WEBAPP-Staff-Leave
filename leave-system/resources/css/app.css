@@ -168,3 +168,10 @@ body.dark-mode .nav-sidebar .nav-link.active {
     flex: none;
     width: 280px;
 }
+
+
+/* System Settings */
+.setting-form-group {
+    max-width: 25%;
+    margin-bottom: 15px;
+}
