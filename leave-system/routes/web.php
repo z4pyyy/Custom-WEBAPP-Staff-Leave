@@ -103,6 +103,7 @@ Route::middleware(['auth', 'can:approve-leave'])->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/account/settings', [AccountController::class, 'edit'])->name('account.settings');
     Route::post('/account/settings', [AccountController::class, 'update']);
+    Route::post('/account/change-password', [AccountController::class, 'changePassword'])->name('account.change-password');
 });
 
 // 🛡️ Auth routes

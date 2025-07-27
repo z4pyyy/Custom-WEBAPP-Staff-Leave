@@ -64,12 +64,16 @@
             <li class="nav-item dropdown">  
                 <a id="navbarDropdown" class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button"
                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <img src="{{ asset('images/Totoro.jpg') }}" class="rounded-circle" width="40" height="40" alt="User Image">
+                    <img 
+                        src="{{ Auth::user()->avatar ? asset('storage/' . Auth::user()->avatar) : 'https://via.placeholder.com/40?text=Avatar' }}" 
+                        alt="User Avatar" 
+                        class="rounded-circle" 
+                        width="40">
                     <span class="ml-2">{{ Auth::user()->name }}</span>
                 </a>
 
                 <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="#">
+                    <a class="dropdown-item" href="{{ route('account.settings') }}">
                         <i class="fas fa-user mr-2"></i> Profile
                     </a>
                     <div class="dropdown-divider"></div>
