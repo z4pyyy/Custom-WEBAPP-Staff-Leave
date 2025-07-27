@@ -30,7 +30,14 @@ class LeaveController extends Controller
             'end_date' => 'required|date',
             'type' => 'required|string',
             'reason' => 'nullable|string',
+            'day_length' => 'required|numeric',
+            'medical_certificate' => 'nullable|file|mimes:pdf|max:2048', // 限制2MB
         ]);
+
+        $path = null;
+        if ($request->hasFile('medical_certificate')) {
+            $path = $request->file('medical_certificate')->store('medical_certificates', 'public');
+        }
 
         $leave = Leave::create([
             'user_id' => auth()->id(),
@@ -38,8 +45,9 @@ class LeaveController extends Controller
             'end_date' => $request->end_date,
             'type' => $request->type,
             'reason' => $request->reason,
-            'status' => 'Pending',
             'day_length' => $request->day_length,
+            'status' => 'Pending',
+            'medical_certificate' => $path,
         ]);
 
         $leave->load('user');
@@ -59,10 +67,11 @@ class LeaveController extends Controller
             'end_date' => $leave->end_date,
             'reason' => $leave->reason,
             'status' => $leave->status,
+            'medical_certificate' => $leave->medical_certificate,
             'created_at' => $leave->created_at->toDateTimeString(),
         ]);
 
-        return redirect()->route('leave.index')->with('success', 'Leave request submitted.');
+        return redirect()->route('leave.history')->with('success', 'Leave request submitted.');
     }
 
     public function showApprovalForm($id)

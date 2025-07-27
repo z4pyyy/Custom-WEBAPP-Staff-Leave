@@ -21,6 +21,7 @@ class Leave extends Model
         'status',
         'day_length',
         'rejection_reason', 
+        'medical_certificate',
     ];
 
 }

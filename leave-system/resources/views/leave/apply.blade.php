@@ -3,7 +3,7 @@
 @section('content')
 <h1 class="mb-4">Apply for Leave</h1>
 
-<form action="{{ route('leave.store') }}" method="POST">
+<form action="{{ route('leave.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
     <div class="form-group">
         <label for="type">Leave Type</label>
@@ -14,6 +14,11 @@
             <option value="Unpaid">Unpaid</option>
             <option value="Replacement">Replacement</option>
         </select>
+    </div>
+    <!-- Show Upload Button When Choosing Medical -->
+    <div class="form-group">
+        <label for="medical_certificate">Upload Medical Certificate (PDF, max 2MB)</label>
+        <input type="file" name="medical_certificate" class="form-control" accept="application/pdf">
     </div>
     <div class="form-group">
         <label for="start_date">Start Date</label>
