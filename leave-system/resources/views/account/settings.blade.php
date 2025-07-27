@@ -36,7 +36,7 @@
 
     {{-- Upload Avatar --}}
     <div class="mb-3">
-        <label for="avatar" class="form-label">Upload Avatar</label>
+        <label for="avatar" class="form-label">Upload Avatar (Limited to 2mb)</label>
         <input type="file" name="avatar" class="form-control">
     </div>
 
