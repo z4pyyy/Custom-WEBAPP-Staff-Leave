@@ -41,7 +41,7 @@
     </thead>
     <tbody>
         @foreach($leaves as $index => $leave)
-            <tr>
+            <tr @if(request('highlight') == $leave->id) class="table-warning" id="highlight-leave" @endif>
                 <td>{{ $index + 1 }}</td>
                 <td>{{ $leave->user->name ?? 'Unknown' }}</td>
                 <td>{{ $leave->type }}</td>
@@ -131,4 +131,13 @@
 function clearFilters() {
     window.location.href = "{{ route('leave.manage') }}";
 }
+</script>
+
+<script>
+    window.onload = function () {
+        const highlighted = document.getElementById('highlight-leave');
+        if (highlighted) {
+            highlighted.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    };
 </script>

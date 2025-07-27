@@ -47,7 +47,7 @@
         </thead>
         <tbody>
             @foreach($leaves as $index => $leave)
-                <tr>
+                <tr @if(request('highlight') == $leave->id) id="highlight-leave" class="table-warning" @endif>
                     <td>{{ $index + 1 }}</td>
                     <td>{{ $leave->type }}</td>
                     <td>{{ $leave->start_date }} ~ {{ $leave->end_date }}</td>
@@ -95,4 +95,16 @@
         {{ $leaves->links() }} {{-- Laravel pagination --}}
     </div>
 </div>
+@endsection
+
+
+@section('scripts')
+<script>
+    window.onload = function () {
+        const highlighted = document.getElementById('highlight-leave');
+        if (highlighted) {
+            highlighted.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    };
+</script>
 @endsection

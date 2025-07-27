@@ -82,15 +82,29 @@ Route::middleware(['auth', CheckPagePermission::class])->group(function () {
     Route::delete('/holidays/delete/{id}', [PublicHolidayController::class, 'destroy'])->name('public_holiday.destroy');
 });
 
-    // 🔹 Notifications
+// 🔹 Notifications
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::get('/notifications/mark-all-read', [NotificationController::class, 'markAllRead'])->name('notifications.markAllRead');
     
-    Route::get('/notifications/read/{id}', function ($id) {
+Route::get('/notifications/read/{id}', function ($id) {
     $notification = auth()->user()->notifications()->findOrFail($id);
     $notification->markAsRead();
-    return redirect($notification->data['url'] ?? '/dashboard');
-    })->name('notifications.read');
+
+    $leaveId = $notification->data['leave_id'] ?? null;
+    $roleId = auth()->user()->role_id;
+
+    if ($leaveId) {
+        if (in_array($roleId, [1, 2])) {
+            // Superadmin 或 Management → Leave Manage
+            return redirect()->route('leave.manage', ['highlight' => $leaveId]);
+        } else {
+            // 普通员工 → Leave History
+            return redirect()->route('leave.history', ['highlight' => $leaveId]);
+        }
+    }
+
+    return redirect('/dashboard');
+})->name('notifications.read');
 
 
 // ✅ Leave Approval (Manager/Admin)

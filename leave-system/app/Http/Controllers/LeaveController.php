@@ -50,7 +50,7 @@ class LeaveController extends Controller
             $admin->notify(new LeaveRequestNotification($leave));
         }
         
-        app('firebase')->push('leaves', [
+        app('firebase')->set("leaves/{$leave->id}", [
             'id' => $leave->id,
             'user_id' => $leave->user_id,
             'user_name' => $leave->user->name ?? 'Unknown',
@@ -68,21 +68,6 @@ class LeaveController extends Controller
     public function showApprovalForm($id)
     {
         $leave = Leave::findOrFail($id);
-        return view('leave.approve', compact('leave'));
-    }
-
-    public function approvePage($id)
-    {
-        $leave = Leave::findOrFail($id);
-
-        // 处理点击通知时自动标记为已读
-        if (request()->has('notification_id')) {
-            $notification = DatabaseNotification::find(request()->get('notification_id'));
-            if ($notification && $notification->notifiable_id === auth()->id()) {
-                $notification->markAsRead();
-            }
-        }
-
         return view('leave.approve', compact('leave'));
     }
 

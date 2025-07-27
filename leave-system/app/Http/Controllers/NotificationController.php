@@ -20,8 +20,13 @@ class NotificationController extends Controller
         $notification = auth()->user()->notifications()->findOrFail($id);
         $notification->markAsRead();
 
-        // 可以重定向去 leave/approve/{id}
-        return redirect()->route('leave.approve', $notification->data['leave_id']);
+        $leaveId = $notification->data['leave_id'] ?? null;
+
+        if ($leaveId) {
+            session()->flash('highlight_leave_id', $leaveId);
+        }
+
+        return redirect()->route('leave.history');
     }
 
     public function markAllRead()
