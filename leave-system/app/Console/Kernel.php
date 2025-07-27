@@ -11,6 +11,7 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\FirebaseWipe::class,
         \App\Console\Commands\FirebaseSetup::class,
         \App\Console\Commands\SeedSuperadminFirebase::class,
+        \App\Console\Commands\CheckPagePermissionMiddleware::class,
     ];
 
     protected function schedule(Schedule $schedule): void

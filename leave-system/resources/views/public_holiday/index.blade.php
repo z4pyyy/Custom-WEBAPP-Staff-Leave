@@ -11,7 +11,7 @@
 {{-- Add Holiday --}}
 <h5 class="mt-4">Add New Public Holiday</h5>
 <hr>
-<form method="POST" action="{{ route('public-holiday.store') }}" class="d-flex flex-wrap gap-2 mb-4">
+<form method="POST" action="{{ route('public_holiday.store') }}" class="d-flex flex-wrap gap-2 mb-4">
     @csrf
     <input type="text" name="name" class="form-control" placeholder="Holiday Name" required style="width:200px;">
     <input type="date" name="date" class="form-control" required style="width:200px;">
@@ -21,7 +21,7 @@
 {{-- Filter --}}
 <h5 class="mt-4">Filter by Year</h5>
 <hr>
-<form method="GET" action="{{ route('public-holiday.index') }}" class="d-flex gap-2 mb-4">
+<form method="GET" action="{{ route('public_holiday.index') }}" class="d-flex gap-2 mb-4">
     <select name="year" class="form-control" style="width:150px;">
         @foreach($years as $y)
             <option value="{{ $y }}" {{ $y == $year ? 'selected' : '' }}>{{ $y }}</option>
@@ -46,7 +46,7 @@
         <tr>
             <td>{{ $holidays->firstItem() + $index }}</td>
             <td>
-                <form method="POST" action="{{ route('public-holiday.update', $holiday->id) }}" class="d-flex gap-2">
+                <form method="POST" action="{{ route('public_holiday.update', $holiday->id) }}" class="d-flex gap-2">
                     @csrf
                     <input type="text" name="name" value="{{ $holiday->name }}" class="form-control" style="width:450px;">
             </td>
@@ -57,7 +57,7 @@
             <td class="d-flex gap-1">
                     <button type="submit" class="btn btn-success btn-sm">Update</button>
                 </form>
-                <form method="POST" action="{{ route('public-holiday.destroy', $holiday->id) }}" onsubmit="return confirm('Confirm delete?')">
+                <form method="POST" action="{{ route('public_holiday.destroy', $holiday->id) }}" onsubmit="return confirm('Confirm delete?')">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger btn-sm">Delete</button>

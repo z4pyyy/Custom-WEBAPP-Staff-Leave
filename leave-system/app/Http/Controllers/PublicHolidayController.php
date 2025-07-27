@@ -9,8 +9,6 @@ class PublicHolidayController extends Controller
 {
     public function index(Request $request)
     {
-        if (!in_array(auth()->user()->role_id, [1,2])) abort(403);
-
         $query = PublicHoliday::query();
         $year = $request->input('year', now()->year);
         $query->whereYear('date', $year);
@@ -32,7 +30,7 @@ class PublicHolidayController extends Controller
             'date' => $request->date,
             'year' => date('Y', strtotime($request->date))
         ]);
-        return redirect()->route('public-holiday.index')->with('success', 'Public holiday added.');
+        return redirect()->route('public_holiday.index')->with('success', 'Public holiday added.');
     }
 
     public function update(Request $request, $id)
@@ -47,13 +45,13 @@ class PublicHolidayController extends Controller
             'date' => $request->date,
             'year' => date('Y', strtotime($request->date))
         ]);
-        return redirect()->route('public-holiday.index')->with('success', 'Public holiday updated.');
+        return redirect()->route('public_holiday.index')->with('success', 'Public holiday updated.');
     }
 
     public function destroy($id)
     {
         $holiday = PublicHoliday::findOrFail($id);
         $holiday->delete();
-        return redirect()->route('public-holiday.index')->with('success', 'Public holiday deleted.');
+        return redirect()->route('public_holiday.index')->with('success', 'Public holiday deleted.');
     }
 }

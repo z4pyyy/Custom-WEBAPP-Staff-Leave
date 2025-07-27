@@ -26,22 +26,9 @@ Route::get('/dashboard', [DashboardController::class, 'dashboard'])
 
 // 🔐 Profile
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
-// ✅ User Management (All routes protected by Firebase-based permission check)
-Route::middleware(['auth', CheckPagePermission::class])->group(function () {
-    Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users');
-    Route::get('/admin/users/create', [UserController::class, 'create'])->name('admin.users.create');
-    Route::post('/admin/users', [UserController::class, 'store'])->name('admin.users.store');
-    Route::get('/admin/users/{id}/edit', [UserController::class, 'edit'])->name('admin.users.edit');
-    Route::post('/admin/users/{id}', [UserController::class, 'update'])->name('admin.users.update');
-    Route::delete('/admin/users/{id}', [UserController::class, 'destroy'])->name('admin.users.delete');
-});
-
-
 
 // 🔐 Page Permission Management (Superadmin Only)
 Route::middleware(['auth', 'ensure.superadmin'])->group(function () {
@@ -54,11 +41,46 @@ Route::middleware(['auth', 'ensure.superadmin'])->group(function () {
 
 // 🔒 Routes enforced by Firebase-based permission check
 Route::middleware(['auth', CheckPagePermission::class])->group(function () {
+    // 🧑‍💼 User Management
+    Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users');
+    Route::get('/admin/users/create', [UserController::class, 'create'])->name('admin.users.create');
+    Route::post('/admin/users', [UserController::class, 'store'])->name('admin.users.store');
     Route::get('/admin/users/{id}/edit', [UserController::class, 'edit'])->name('admin.users.edit');
     Route::post('/admin/users/{id}', [UserController::class, 'update'])->name('admin.users.update');
     Route::delete('/admin/users/{id}', [UserController::class, 'destroy'])->name('admin.users.delete');
-});
 
+    // 👤 Profile
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+
+    // 📝 Leave
+    Route::get('/leave', [LeaveController::class, 'index'])->name('leave.index');
+    Route::get('/leave/apply', [LeaveController::class, 'create'])->name('leave.apply');
+    Route::post('/leave/store', [LeaveController::class, 'store'])->name('leave.store');
+    Route::get('/leave/history', [LeaveController::class, 'history'])->name('leave.history');
+    Route::get('/leave/calendar', [LeaveController::class, 'calendar'])->name('leave.calendar');
+    Route::get('/leave/calendar/data', [LeaveController::class, 'calendarData'])->name('leave.calendar.data');
+    Route::get('/leave/manage', [LeaveController::class, 'manage'])->name('leave.manage');
+    Route::get('/leave/report', [LeaveController::class, 'report'])->name('leave.report');
+
+    // 🧾 Balance
+    Route::get('/balance', [AnnualLeaveBalanceController::class, 'index'])->name('balance.index');
+    Route::post('/balance/update', [AnnualLeaveBalanceController::class, 'update'])->name('balance.update');
+    Route::post('/balance/store', [AnnualLeaveBalanceController::class, 'store'])->name('balance.store');
+    Route::delete('/balance/{id}', [AnnualLeaveBalanceController::class, 'destroy'])->name('balance.destroy');
+
+    // ⚙️ System Settings
+    Route::get('/system/settings', [SystemSettingController::class, 'index'])->name('system.index');
+    Route::post('/system/settings/updateAnnualLeave', [SystemSettingController::class, 'updateAnnualLeave'])->name('system.updateAnnualLeave');
+    Route::post('/system/settings/updateSystemInfo', [SystemSettingController::class, 'updateSystemInfo'])->name('system.updateSystemInfo');
+    Route::post('/system/settings/storeLeaveType', [SystemSettingController::class, 'storeLeaveType'])->name('system.storeLeaveType');
+    Route::delete('/system/settings/deleteLeaveType/{id}', [SystemSettingController::class, 'deleteLeaveType'])->name('system.deleteLeaveType');
+
+    // 📅 Public Holidays
+    Route::get('/holidays', [PublicHolidayController::class, 'index'])->name('public_holiday.index');
+    Route::post('/holidays/store', [PublicHolidayController::class, 'store'])->name('public_holiday.store');
+    Route::post('/holidays/update/{id}', [PublicHolidayController::class, 'update'])->name('public_holiday.update');
+    Route::delete('/holidays/delete/{id}', [PublicHolidayController::class, 'destroy'])->name('public_holiday.destroy');
+});
 
     // 🔹 Notifications
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
@@ -70,39 +92,11 @@ Route::middleware(['auth', CheckPagePermission::class])->group(function () {
     return redirect($notification->data['url'] ?? '/dashboard');
     })->name('notifications.read');
 
-// 🗓️ Leave Management
-Route::middleware('auth')->group(function () {
-    Route::get('/leave', [LeaveController::class, 'index'])->name('leave.index'); // 管理页面（显示所有记录）
-    Route::get('/leave/apply', [LeaveController::class, 'create'])->name('leave.apply');
-    Route::post('/leave/store', [LeaveController::class, 'store'])->name('leave.store');
-    Route::get('/leave/history', [LeaveController::class, 'history'])->name('leave.history');
-    Route::get('/leave/calendar', [LeaveController::class, 'calendar'])->name('leave.calendar');
-    Route::get('/leave/calendar/data', [LeaveController::class, 'calendarData'])->name('leave.calendar.data');
-    Route::get('/leave/manage', [LeaveController::class, 'manage'])->name('leave.manage');
-});
 
 // ✅ Leave Approval (Manager/Admin)
 Route::middleware(['auth', 'can:approve-leave'])->group(function () {
     Route::post('/leave/{id}/approve', [LeaveController::class, 'approve'])->name('leave.approve');
     Route::post('/leave/reject', [LeaveController::class, 'reject'])->name('leave.reject');
-});
-
-// ⚙️ System Settings + Admin-Only Panels
-Route::middleware(['auth', 'can:is-admin'])->group(function () {
-    Route::get('/leave/report', [LeaveController::class, 'report'])->name('leave.report');
-    Route::get('/system/settings', [SystemSettingController::class, 'index'])->name('system.index');
-    Route::post('/system/settings/updateAnnualLeave', [SystemSettingController::class, 'updateAnnualLeave'])->name('system.updateAnnualLeave');
-    Route::post('/system/settings/updateSystemInfo', [SystemSettingController::class, 'updateSystemInfo'])->name('system.updateSystemInfo');
-    Route::post('/system/settings/storeLeaveType', [SystemSettingController::class, 'storeLeaveType'])->name('system.storeLeaveType');
-    Route::delete('/system/settings/deleteLeaveType/{id}', [SystemSettingController::class, 'deleteLeaveType'])->name('system.deleteLeaveType');
-});
-
-// 🔹 Public Holidays Management (Admin & Management)
-Route::middleware(['auth', 'verified'])->group(function() {
-    Route::get('/holidays', [PublicHolidayController::class, 'index'])->name('public-holiday.index');
-    Route::post('/holidays/store', [PublicHolidayController::class, 'store'])->name('public-holiday.store');
-    Route::post('/holidays/update/{id}', [PublicHolidayController::class, 'update'])->name('public-holiday.update');
-    Route::delete('/holidays/delete/{id}', [PublicHolidayController::class, 'destroy'])->name('public-holiday.destroy');
 });
 
 // 👤 Account Settings
@@ -113,12 +107,3 @@ Route::middleware('auth')->group(function () {
 
 // 🛡️ Auth routes
 require __DIR__.'/auth.php';
-
-// 🔹 Annual Leave Balance Management (Admin & Management)
-Route::middleware(['auth'])->group(function () {
-    Route::get('/balance', [AnnualLeaveBalanceController::class, 'index'])->name('balance.index');
-    Route::post('/balance/update', [AnnualLeaveBalanceController::class, 'update'])->name('balance.update');
-    Route::post('/balance/store', [AnnualLeaveBalanceController::class, 'store'])->name('balance.store');
-    Route::delete('/balance/{id}', [AnnualLeaveBalanceController::class, 'destroy'])->name('balance.destroy');
-});
-
