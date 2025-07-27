@@ -37,6 +37,7 @@
             <th>Status</th>
             <th>Rejection Reason</th>
             <th>Action</th>
+            <th>Attachment</th>
         </tr>
     </thead>
     <tbody>
@@ -86,40 +87,58 @@
                             @csrf
                             <button type="submit" class="btn btn-success">Approve</button>
                         </form>
-
+                        
                         <!-- Reject Trigger -->
                         <button class="btn btn-danger" data-toggle="modal" data-target="#rejectModal-{{ $leave->id }}">
                             Reject
                         </button>
-
+                        
                         <!-- Modal -->
                         <div class="modal fade" id="rejectModal-{{ $leave->id }}" tabindex="-1" role="dialog" aria-labelledby="rejectModalLabel-{{ $leave->id }}" aria-hidden="true">
-                          <div class="modal-dialog" role="document">
-                            <form method="POST" action="{{ route('leave.reject') }}">
-                                @csrf
-                                <input type="hidden" name="leave_id" value="{{ $leave->id }}">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="rejectModalLabel-{{ $leave->id }}">Reject Leave Request</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                          <span aria-hidden="true">&times;</span>
-                                        </button>
+                            <div class="modal-dialog" role="document">
+                                <form method="POST" action="{{ route('leave.reject') }}">
+                                    @csrf
+                                    <input type="hidden" name="leave_id" value="{{ $leave->id }}">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="rejectModalLabel-{{ $leave->id }}">Reject Leave Request</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <textarea name="rejection_reason" class="form-control" rows="4"></textarea>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-danger">Reject</button>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                        </div>
+                                        
                                     </div>
-                                    <div class="modal-body">
-                                        <textarea name="rejection_reason" class="form-control" rows="4"></textarea>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="submit" class="btn btn-danger">Reject</button>
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                    </div>
-                                </div>
-                            </form>
-                          </div>
+
+                                </form>
+                            </div>
                         </div>                    
                         @else
                         <span class="text-muted">No Action</span>
-                    @endif
-                </td>
+                        @endif
+                    </td>
+                    <td>
+                        @if(in_array(auth()->user()->role_id, [1, 2]) && $leave->medical_certificate)
+                            <a href="{{ asset('storage/' . $leave->medical_certificate) }}" target="_blank" class="btn btn-sm btn-info">
+                                Preview
+                            </a>
+                            <a href="{{ asset('storage/' . $leave->medical_certificate) }}" download class="btn btn-sm btn-secondary">
+                                Download
+                            </a>
+                        @else
+                            @if($leave->type === 'Medical')
+                                <span class="text-muted">No Access</span>
+                            @else
+                                <span class="text-muted">N/A</span>
+                            @endif
+                        @endif
+                    </td>
             </tr>
         @endforeach
     </tbody>

@@ -40,6 +40,7 @@
                 <th>Dates</th>
                 <th>Days</th>
                 <th>Status</th>
+                <th>Attachment</th>
                 @if(auth()->user()->role === 'admin')
                     <th>User</th>
                 @endif
@@ -86,6 +87,22 @@
                     @if(auth()->user()->role === 'admin')
                         <td>{{ $leave->user->name ?? 'Unknown' }}</td>
                     @endif
+                    <td>
+                        @if(in_array(auth()->user()->role_id, [1, 2, 3]) && $leave->medical_certificate)
+                            <a href="{{ asset('storage/' . $leave->medical_certificate) }}" target="_blank" class="btn btn-sm btn-info">
+                                Preview
+                            </a>
+                            <a href="{{ asset('storage/' . $leave->medical_certificate) }}" download class="btn btn-sm btn-secondary">
+                                Download
+                            </a>
+                        @else
+                            @if($leave->type === 'Medical')
+                                <span class="text-muted">No Access</span>
+                            @else
+                                <span class="text-muted">N/A</span>
+                            @endif
+                        @endif
+                    </td>
                 </tr>
             @endforeach
         </tbody>
