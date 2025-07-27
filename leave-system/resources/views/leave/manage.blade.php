@@ -1,6 +1,7 @@
 @extends('layouts.admin')
 
 @section('content')
+<h2>Manage Leave</h2>
 <form method="GET" action="{{ route('leave.manage') }}" class="mb-3" style="margin-bottom: 30px;">
   <div class="row">
     <div class="col-md-3">

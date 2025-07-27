@@ -5,6 +5,7 @@
 
 <form action="{{ route('leave.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
+
     <div class="form-group">
         <label for="type">Leave Type</label>
         <select name="type" id="type" class="form-control" required>
@@ -15,11 +16,23 @@
             <option value="Replacement">Replacement</option>
         </select>
     </div>
-    <!-- Show Upload Button When Choosing Medical -->
+
+    <!-- Upload PDF -->
     <div class="form-group">
         <label for="medical_certificate">Upload Medical Certificate (PDF, max 2MB)</label>
-        <input type="file" name="medical_certificate" class="form-control" accept="application/pdf">
+        <input 
+            type="file" 
+            name="medical_certificate" 
+            class="form-control @error('medical_certificate') is-invalid @enderror"
+            accept="application/pdf"
+        >
+        @error('medical_certificate')
+            <div class="invalid-feedback">
+                {{ $message }}
+            </div>
+        @enderror
     </div>
+
     <div class="form-group">
         <label for="start_date">Start Date</label>
         <input type="date" name="start_date" class="form-control" required>

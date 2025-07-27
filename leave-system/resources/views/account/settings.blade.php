@@ -36,8 +36,16 @@
 
     {{-- Upload Avatar --}}
     <div class="mb-3">
-        <label for="avatar" class="form-label">Upload Avatar (max 2mb)</label>
-        <input type="file" name="avatar" class="form-control">
+        <label for="avatar" class="form-label">Upload Profile Picture (JPEG/PNG, max 2MB)</label>
+        <input 
+            type="file" 
+            name="avatar" 
+            class="form-control @error('avatar') is-invalid @enderror" 
+            accept="image/*"
+        >
+        @error('avatar')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
     </div>
 
     <div class="mb-3">
