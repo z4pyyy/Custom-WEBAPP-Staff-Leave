@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Leave; 
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use App\Notifications\LeaveRequestNotification;
+use App\Notifications\LeaveCancelledNotification;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\JsonResponse;
@@ -31,8 +33,18 @@ class LeaveController extends Controller
             'type' => 'required|string',
             'reason' => 'nullable|string',
             'day_length' => 'required|numeric',
+            'half_day_date' => 'nullable|date',
+            'half_day_session' => 'nullable|in:AM,PM',
             'medical_certificate' => 'nullable|file|mimes:pdf|max:2048', // 限制2MB
         ]);
+
+        if (fmod($request->day_length, 1) !== 0.0) {
+            if (empty($request->half_day_date) || empty($request->half_day_session)) {
+                return redirect()->back()
+                    ->withInput()
+                    ->withErrors(['half_day_date' => 'Please fill in Half Day Date and Session for non-full-day leave.']);
+            }
+        }
 
         $path = null;
         if ($request->hasFile('medical_certificate')) {
@@ -46,6 +58,8 @@ class LeaveController extends Controller
             'type' => $request->type,
             'reason' => $request->reason,
             'day_length' => $request->day_length,
+            'half_day_date' => $request->half_day_date,
+            'half_day_session' => $request->half_day_session,
             'status' => 'Pending',
             'medical_certificate' => $path,
         ]);
@@ -65,6 +79,8 @@ class LeaveController extends Controller
             'type' => $leave->type,
             'start_date' => $leave->start_date,
             'end_date' => $leave->end_date,
+            'half_day_date' => $leave->half_day_date,
+            'half_day_session' => $leave->half_day_session,
             'reason' => $leave->reason,
             'status' => $leave->status,
             'medical_certificate' => $leave->medical_certificate,
@@ -276,6 +292,62 @@ class LeaveController extends Controller
 
         $leaves = $query->latest()->paginate(10);
         return view('leave.history', compact('leaves'));
+    }
+
+
+    public function cancel($id)
+    {
+        $leave = Leave::findOrFail($id);
+
+        if (auth()->user()->id !== $leave->user_id && !in_array(auth()->user()->role_id, [1, 2, 3])) {
+            abort(403, 'Unauthorized');
+        }
+
+        if ($leave->status === 'Approved' && Carbon::parse($leave->end_date)->addWeek()->isPast()) {
+            return redirect()->back()->with('error', 'Leave period is too old to be cancelled.');
+        }
+
+        $leave->status = 'Cancelled';
+        $leave->canceled_at = now();
+        $leave->save();
+
+        // If the leave type is annual, update the balance
+        if (strtolower($leave->type) === 'annual') {
+            $year = Carbon::parse($leave->start_date)->year;
+            $balance = AnnualLeaveBalances::where('user_id', $leave->user_id)->where('year', $year)->first();
+
+            if ($balance) {
+                $balance->starting_balance += $leave->day_length;
+                $balance->save();
+            }
+        }
+
+        // Firebase update
+        app('firebase')->set("leaves/{$leave->id}", [
+            'id' => $leave->id,
+            'user_id' => $leave->user_id,
+            'user_name' => $leave->user->name ?? 'Unknown',
+            'type' => $leave->type,
+            'start_date' => $leave->start_date,
+            'end_date' => $leave->end_date,
+            'reason' => $leave->reason,
+            'status' => 'Cancelled',
+            'canceled_at' => optional($leave->canceled_at)->toDateTimeString(),
+            'created_at' => $leave->created_at->toDateTimeString(),
+        ]);
+
+        if ($leave->user) {
+            $leave->user->notify(new LeaveCancelledNotification($leave));
+        }
+
+        $recipients = \App\Models\User::whereIn('role_id', [1, 2])->get();
+        foreach ($recipients as $user) {
+            if ($user->id !== $leave->user_id) {
+                $user->notify(new LeaveCancelledNotification($leave));
+            }
+        }
+
+        return redirect()->back()->with('success', 'Leave cancelled successfully.');
     }
 
 }

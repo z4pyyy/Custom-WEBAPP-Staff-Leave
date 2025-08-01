@@ -26,6 +26,7 @@
             <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>Approved</option>
             <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
             <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>Rejected</option>
+            <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
         </select>
 
         <button type="submit" class="btn btn-primary">Filter</button>
@@ -40,6 +41,7 @@
                 <th>Dates</th>
                 <th>Days</th>
                 <th>Status</th>
+                <th>Action</th>
                 <th>Attachment</th>
                 @if(auth()->user()->role === 'admin')
                     <th>User</th>
@@ -51,35 +53,28 @@
                 <tr @if(request('highlight') == $leave->id) id="highlight-leave" class="table-warning" @endif>
                     <td>{{ $index + 1 }}</td>
                     <td>{{ $leave->type }}</td>
-                    <td>{{ $leave->start_date }} ~ {{ $leave->end_date }}</td>
+<td>
+    {{ \Carbon\Carbon::parse($leave->start_date)->format('Y-m-d') }} ~ {{ \Carbon\Carbon::parse($leave->end_date)->format('Y-m-d') }}
+
+    @if(fmod(floatval($leave->day_length), 1) !== 0.0 && $leave->half_day_date && $leave->half_day_session)
+        <br>
+        <small class="text-muted">
+            ({{ \Carbon\Carbon::parse($leave->half_day_date)->format('Y-m-d') }} - 
+            {{ $leave->half_day_session === 'AM' ? 'Morning' : 'Afternoon' }})
+        </small>
+    @endif
+</td>
+
                     <td>
-                    @php
-                        $start = \Carbon\Carbon::parse($leave->start_date);
-                        $end = \Carbon\Carbon::parse($leave->end_date);
-                    @endphp
-
-                    @if ($start->eq($end))
-                        @php
-                            $day = $leave->day_length;
-                            $is_float = floor($day) != $day;
-                        @endphp
-
-                        @if ($is_float)
-                            {{ $day }} day(s)
-                        @elseif ($day == 1)
-                            1 day
-                        @else
-                            {{ intval($day) }} days
-                        @endif
-                    @else
-                        {{ $start->diffInDays($end) + 1 }} days
-                    @endif
-                </td>
+                        {{ rtrim(rtrim($leave->day_length, '0'), '.') }} day{{ $leave->day_length == 1 ? '' : 's' }}
+                    </td>
                     <td>
                         @if($leave->status === 'Approved')
                             <span class="badge badge-success">Approved</span>
                         @elseif($leave->status === 'Rejected')
                             <span class="badge badge-danger">Rejected</span>
+                        @elseif($leave->status === 'Cancelled')
+                            <span class="badge badge-secondary">Cancelled</span>
                         @else
                             <span class="badge badge-warning">Pending</span>
                         @endif
@@ -87,6 +82,20 @@
                     @if(auth()->user()->role === 'admin')
                         <td>{{ $leave->user->name ?? 'Unknown' }}</td>
                     @endif
+                    <td>
+                    @php
+                        $canCancel = in_array($leave->status, ['Pending', 'Approved'])
+                            && !$leave->canceled_at
+                            && !(\Carbon\Carbon::parse($leave->end_date)->lt(now()->subDays(7)) && $leave->status === 'Approved');
+                    @endphp
+
+                    @if($canCancel)
+                        <form action="{{ route('leave.cancel', $leave->id) }}" method="POST" onsubmit="return confirm('Are you sure to cancel this leave?')">
+                            @csrf
+                            <button class="btn btn-danger btn-sm">Cancel</button>
+                        </form>
+                    @endif
+                    </td>
                     <td>
                         @if(in_array(auth()->user()->role_id, [1, 2, 3]) && $leave->medical_certificate)
                             <a href="{{ asset('storage/' . $leave->medical_certificate) }}" target="_blank" class="btn btn-sm btn-info">

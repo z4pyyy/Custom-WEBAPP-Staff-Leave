@@ -16,6 +16,7 @@
         <option value="Pending" {{ request('status') == 'Pending' ? 'selected' : '' }}>Pending</option>
         <option value="Rejected" {{ request('status') == 'Rejected' ? 'selected' : '' }}>Rejected</option>
         <option value="Approved" {{ request('status') == 'Approved' ? 'selected' : '' }}>Approved</option>
+        <option value="Cancelled" {{ request('status') == 'Cancelled' ? 'selected' : '' }}>Cancelled</option>
       </select>
     </div>
     <div class="col-md-3">
@@ -47,29 +48,19 @@
                 <td>{{ $index + 1 }}</td>
                 <td>{{ $leave->user->name ?? 'Unknown' }}</td>
                 <td>{{ $leave->type }}</td>
-                <td>{{ $leave->start_date }} ~ {{ $leave->end_date }}</td>
+<td>
+    {{ \Carbon\Carbon::parse($leave->start_date)->format('Y-m-d') }} ~ {{ \Carbon\Carbon::parse($leave->end_date)->format('Y-m-d') }}
+
+    @if(fmod(floatval($leave->day_length), 1) !== 0.0 && $leave->half_day_date && $leave->half_day_session)
+        <br>
+        <small class="text-muted">
+            ({{ \Carbon\Carbon::parse($leave->half_day_date)->format('Y-m-d') }} - 
+            {{ $leave->half_day_session === 'AM' ? 'Morning' : 'Afternoon' }})
+        </small>
+    @endif
+</td>
                 <td>
-                    @php
-                        $start = \Carbon\Carbon::parse($leave->start_date);
-                        $end = \Carbon\Carbon::parse($leave->end_date);
-                    @endphp
-
-                    @if ($start->eq($end))
-                        @php
-                            $day = $leave->day_length;
-                            $is_float = floor($day) != $day;
-                        @endphp
-
-                        @if ($is_float)
-                            {{ $day }} day(s)
-                        @elseif ($day == 1)
-                            1 day
-                        @else
-                            {{ intval($day) }} days
-                        @endif
-                    @else
-                        {{ $start->diffInDays($end) + 1 }} days
-                    @endif
+                    {{ rtrim(rtrim($leave->day_length, '0'), '.') }} day{{ $leave->day_length == 1 ? '' : 's' }}
                 </td>
                 <td>{{ $leave->reason }}</td>
                 <td>
@@ -77,6 +68,8 @@
                         <span class="badge bg-success">Approved</span>
                     @elseif($leave->status === 'Rejected')
                         <span class="badge bg-danger">Rejected</span>
+                    @elseif($leave->status === 'Cancelled')
+                        <span class="badge bg-secondary">Cancelled</span>
                     @else
                         <span class="badge bg-warning text-dark">Pending</span>
                     @endif
@@ -123,6 +116,20 @@
                         @else
                         <span class="text-muted">No Action</span>
                         @endif
+
+                        @php
+                            $canCancel = in_array($leave->status, ['Pending', 'Approved'])
+                                && !$leave->canceled_at
+                                && !(\Carbon\Carbon::parse($leave->end_date)->lt(now()->subDays(7)) && $leave->status === 'Approved');
+                        @endphp
+
+                        @if($canCancel)
+                            <form action="{{ route('leave.cancel', $leave->id) }}" method="POST" onsubmit="return confirm('Are you sure to cancel this leave?')">
+                                @csrf
+                                <button class="btn btn-danger btn-sm">Cancel</button>
+                            </form>
+                        @endif
+
                     </td>
                     <td>
                         @if(in_array(auth()->user()->role_id, [1, 2]) && $leave->medical_certificate)

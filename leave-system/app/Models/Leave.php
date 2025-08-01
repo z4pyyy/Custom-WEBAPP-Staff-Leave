@@ -17,6 +17,8 @@ class Leave extends Model
         'type',
         'start_date',
         'end_date',
+        'half_day_date',
+        'half_day_session', 
         'reason',
         'status',
         'day_length',

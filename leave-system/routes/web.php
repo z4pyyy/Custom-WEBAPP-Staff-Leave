@@ -111,6 +111,7 @@ Route::get('/notifications/read/{id}', function ($id) {
 Route::middleware(['auth', 'can:approve-leave'])->group(function () {
     Route::post('/leave/{id}/approve', [LeaveController::class, 'approve'])->name('leave.approve');
     Route::post('/leave/reject', [LeaveController::class, 'reject'])->name('leave.reject');
+    Route::post('/leave/{id}/cancel', [LeaveController::class, 'cancel'])->name('leave.cancel');
 });
 
 // 👤 Account Settings

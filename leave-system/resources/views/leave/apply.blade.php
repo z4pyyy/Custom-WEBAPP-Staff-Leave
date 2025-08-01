@@ -45,6 +45,18 @@
         <label for="day_length">Leave Days (Fillable 0.5, 1, 1.5)</label>
         <input type="number" name="day_length" class="form-control" step="0.5" min="0.5" value="1" required>
     </div>
+        <div class="form-group">
+        <label for="half_day_date">Half Day Date (only if not full-day leave)</label>
+        <input type="date" name="half_day_date" class="form-control" value="{{ old('half_day_date') }}">
+    </div>
+    <div class="form-group">
+        <label for="half_day_session">Half Day Session</label>
+        <select name="half_day_session" class="form-control">
+            <option value="">-- Select --</option>
+            <option value="AM" {{ old('half_day_session') == 'AM' ? 'selected' : '' }}>Morning (AM)</option>
+            <option value="PM" {{ old('half_day_session') == 'PM' ? 'selected' : '' }}>Afternoon (PM)</option>
+        </select>
+    </div>
     <div class="form-group">
         <label for="reason">Reason</label>
         <textarea name="reason" class="form-control" rows="3"></textarea>
@@ -52,3 +64,23 @@
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 @endsection
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const dayLengthInput = document.querySelector('input[name="day_length"]');
+        const halfDayFields = [
+            document.querySelector('input[name="half_day_date"]').closest('.form-group'),
+            document.querySelector('select[name="half_day_session"]').closest('.form-group'),
+        ];
+
+        function toggleHalfDayFields() {
+            const value = parseFloat(dayLengthInput.value);
+            const show = value % 1 !== 0;
+            halfDayFields.forEach(field => field.style.display = show ? 'block' : 'none');
+        }
+
+        dayLengthInput.addEventListener('input', toggleHalfDayFields);
+        toggleHalfDayFields(); 
+    });
+</script>
